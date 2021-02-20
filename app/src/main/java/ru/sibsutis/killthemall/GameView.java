@@ -21,7 +21,7 @@ public class GameView extends SurfaceView {
     /*Поле рисования*/
     private SurfaceHolder holder;
 
-    TextView scoreView ;
+    TextView scoreView;
 
     Paint scorePaint;
 
@@ -32,8 +32,7 @@ public class GameView extends SurfaceView {
         return random.nextInt(max - min) + min;
     }
 
-    public GameView(Context context)
-    {
+    public GameView(Context context) {
         super(context);
         gameLoopThread = new GameManager(this);
         holder = getHolder();
@@ -48,45 +47,36 @@ public class GameView extends SurfaceView {
         scorePaint.setTextSize(50);
 
         /*Рисуем все наши объекты и все все все*/
-        holder.addCallback(new SurfaceHolder.Callback()
-        {
+        holder.addCallback(new SurfaceHolder.Callback() {
             /* Уничтожение области рисования */
-            public void surfaceDestroyed(SurfaceHolder holder)
-            {
+            public void surfaceDestroyed(SurfaceHolder holder) {
                 boolean retry = true;
                 gameLoopThread.setRunning(false);
-                while (retry)
-                {
-                    try
-                    {
+                while (retry) {
+                    try {
                         gameLoopThread.join();
                         retry = false;
-                    }
-                    catch (InterruptedException e)
-                    {
+                    } catch (InterruptedException e) {
                     }
                 }
             }
 
             /* Создание области рисования */
-            public void surfaceCreated(SurfaceHolder holder)
-            {
+            public void surfaceCreated(SurfaceHolder holder) {
                 gameLoopThread.setRunning(true);
                 gameLoopThread.start();
             }
 
             /* Изменение области рисования */
             public void surfaceChanged(SurfaceHolder holder, int format,
-                                       int width, int height)
-            {
+                                       int width, int height) {
             }
         });
 
     }
 
     /*Функция рисующая все спрайты и фон*/
-    protected void onDraw(Canvas canvas)
-    {
+    protected void onDraw(Canvas canvas) {
         canvas.drawColor(Color.WHITE);
 
         //цикл по изменению координат уже идет в потоках
@@ -98,25 +88,21 @@ public class GameView extends SurfaceView {
                 sprite.update();
         }*/
 
-        for(int i=0;i<bugs.size();i++)
-        {
+        for (int i = 0; i < bugs.size(); i++) {
             Bug sprite = bugs.get(i);
-            if(sprite!=null)
+            if (sprite != null)
                 sprite.onDraw(canvas);
         }
         //проверяем, пора ли удалить жучка
         //(не в потоке, для минимизации ошибок)
-        for(int i=0;i<bugs.size();)
-        {
+        for (int i = 0; i < bugs.size(); ) {
             Bug sprite = bugs.get(i);
-            if(sprite!=null)
-            {
-                if(sprite.canBeDestroyed)
+            if (sprite != null) {
+                if (sprite.canBeDestroyed)
                     bugs.remove(i);
                 else
                     i++;
-            }
-            else
+            } else
                 i++;
         }
         String lines[] = scoreView.getText().toString().split("\\r?\\n");

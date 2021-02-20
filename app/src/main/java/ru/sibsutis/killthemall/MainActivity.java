@@ -28,67 +28,64 @@ public class MainActivity extends Activity implements OnTouchListener {
     private int userScore = 0;
     private float lastTime = 30.0f;
     private SoundPool sounds;
-    private int sHit,sMiss,sGameOver;
+    private int sHit, sMiss, sGameOver;
     boolean touched = false;
 
     String sDown;
 
-    private void statsChange(){
-        gameView.scoreView.setText("Time left: "+lastTime+" s.\nScore: "+userScore);
+    private void statsChange() {
+        gameView.scoreView.setText("Time left: " + lastTime + " s.\nScore: " + userScore);
     }
 
-    private boolean BugClicked(Bug bug,float xc, float yc)
-    {
+    private boolean BugClicked(Bug bug, float xc, float yc) {
         float x = bug.x;
         float y = bug.y;
         int h = bug.bmp.getHeight();
         int w = bug.bmp.getWidth();
 
-        if(xc>=x && xc<=x+w && yc>=y && yc<=y+h)
-        {
-            bug.canBeDestroyed=true;
+        if (xc >= x && xc <= x + w && yc >= y && yc <= y + h) {
+            bug.canBeDestroyed = true;
             return true;
         }
 
         return false;
     }
 
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        sounds = new SoundPool(10, AudioManager.STREAM_MUSIC,0);
+        sounds = new SoundPool(10, AudioManager.STREAM_MUSIC, 0);
         sHit = sounds.load(this, R.raw.kill, 1);
         sMiss = sounds.load(this, R.raw.miss, 1);
         sGameOver = sounds.load(this, R.raw.gameover, 1);
 
         gameView = new GameView(this);
         gameView.setOnTouchListener(this);
-        userScore=0;
+        userScore = 0;
         setContentView(gameView);
-        new CountDownTimer(30000,300){
-            public void onTick(long msUntilFinished){
-                lastTime = msUntilFinished/1000.0f;
+        new CountDownTimer(30000, 300) {
+            public void onTick(long msUntilFinished) {
+                lastTime = msUntilFinished / 1000.0f;
                 statsChange();
-                int bugIndex = getRandomNumber(1,10);
+                int bugIndex = getRandomNumber(1, 10);
                 int score;
-                switch(bugIndex)
-                {
+                switch (bugIndex) {
                     case 1:
                         bmp = BitmapFactory.decodeResource(getResources(), R.drawable.bug);
                         score = 300;
                         break;
-                    case 2:case 3:
-                    bmp = BitmapFactory.decodeResource(getResources(), R.drawable.cock);
-                    score=200;
-                    break;
+                    case 2:
+                    case 3:
+                        bmp = BitmapFactory.decodeResource(getResources(), R.drawable.cock);
+                        score = 200;
+                        break;
                     default:
                         bmp = BitmapFactory.decodeResource(getResources(), R.drawable.ant);
-                        score=100;
+                        score = 100;
                         break;
                 }
-                Bug bug=new Bug(gameView,bmp,score);
+                Bug bug = new Bug(gameView, bmp, score);
                 bugs.add(bug);
                 /*if(bugs.add(bug)) {
                     Log.wtf("Bug add", Integer.toString(bugs.size()));
@@ -104,17 +101,18 @@ public class MainActivity extends Activity implements OnTouchListener {
             public void onFinish() {
                 //игра окончена
                 bugs.clear();
-                lastTime=-1;
-                gameView.scoreView.setText("Game Over! \nYour score: "+userScore);
+                lastTime = -1;
+                gameView.scoreView.setText("Game Over! \nYour score: " + userScore);
                 sounds.play(sGameOver, 1.0f, 1.0f, 0, 0, 1.5f);
                 //Log.wtf("Bug clean",Integer.toString(bugs.size()));
             }
         }.start();
     }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        if(lastTime<=0)
+        if (lastTime <= 0)
             return false;
         float x = event.getX();
         float y = event.getY();
@@ -123,21 +121,18 @@ public class MainActivity extends Activity implements OnTouchListener {
             case MotionEvent.ACTION_DOWN: // нажатие
                 sDown = x + "," + y;
                 boolean bugClicked = false;
-                for(int i=0;i<bugs.size();i++)
-                {
-                    if(BugClicked(bugs.get(i),x,y)){
+                for (int i = 0; i < bugs.size(); i++) {
+                    if (BugClicked(bugs.get(i), x, y)) {
                         bugs.get(i).x = -1000;
                         bugs.get(i).y = -1000;
-                        bugClicked=true;
-                        userScore+=bugs.get(i).score;
+                        bugClicked = true;
+                        userScore += bugs.get(i).score;
                     }
                 }
-                if(!bugClicked)
-                {
+                if (!bugClicked) {
                     sounds.play(sMiss, 1.0f, 1.0f, 0, 0, 1.5f);
-                    userScore-=100;
-                }
-                else
+                    userScore -= 100;
+                } else
                     sounds.play(sHit, 1.0f, 1.0f, 0, 0, 1.5f);
                 statsChange();
                 break;

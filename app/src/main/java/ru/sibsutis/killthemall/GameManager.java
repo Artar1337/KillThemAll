@@ -2,8 +2,7 @@ package ru.sibsutis.killthemall;
 
 import android.graphics.Canvas;
 
-public class GameManager extends Thread
-{
+public class GameManager extends Thread {
     static final long FPS = 60;
 
     private GameView view;
@@ -11,20 +10,17 @@ public class GameManager extends Thread
     //состояние потока
     private boolean running = false;
 
-    public GameManager(GameView view)
-    {
+    public GameManager(GameView view) {
         this.view = view;
     }
 
-    public void setRunning(boolean run)
-    {
+    public void setRunning(boolean run) {
         running = run;
     }
 
 
     @Override
-    public void run()
-    {
+    public void run() {
         long ticksPS = 1000 / FPS;
         long startTime;
         long sleepTime;
@@ -41,13 +37,14 @@ public class GameManager extends Thread
                     view.getHolder().unlockCanvasAndPost(c);
                 }
             }
-            sleepTime = ticksPS-(System.currentTimeMillis() - startTime);
+            sleepTime = ticksPS - (System.currentTimeMillis() - startTime);
             try {
                 if (sleepTime > 0)
                     sleep(sleepTime);
                 else
                     sleep(10);
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 }
