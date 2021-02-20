@@ -121,9 +121,9 @@ public class GameView extends SurfaceView {
         }
         String lines[] = scoreView.getText().toString().split("\\r?\\n");
         canvas.drawText(lines[0],
-                100, 150, scorePaint);
+                100, 140, scorePaint);
         canvas.drawText(lines[1],
-                100, 200, scorePaint);
+                100, 190, scorePaint);
 
     }
 }
