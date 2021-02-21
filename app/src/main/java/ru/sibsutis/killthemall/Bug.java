@@ -2,12 +2,7 @@ package ru.sibsutis.killthemall;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Rect;
 import android.graphics.Matrix;
-import android.util.Log;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.ImageView;
 
 import static ru.sibsutis.killthemall.GameView.getRandomNumber;
 
